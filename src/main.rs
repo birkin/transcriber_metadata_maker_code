@@ -1,29 +1,36 @@
-use std::arch::aarch64::int32x2_t;
+// use std::arch::aarch64::int32x2_t;
 use std::collections::HashMap;
 
-use reqwest::*;
+// use reqwest::*;
 use serde_json;
-use tokio::*;
+// use tokio::*;
 
 #[tokio::main]
 async fn main() {
-    // define settings HashMap
-    // let mut settings: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+    // load settings ----------------------------
     let settings: HashMap<String, String> = load_settings().await;
+    println!("settings, ``{:?}``", settings);
 
-    // load log-path from environmental-variable
-    // let log_path: String = std::env::var("LOG_PATH").unwrap_or_else(|error| {
-    //     panic!(
-    //         "Problem accessing environmental-variable ``LOG_PATH``: ``{:?}``",
-    //         error
-    //     );
-    // });
+    let test = settings.get("TRACKER_PATH").unwrap().clone();
 
-    // let search_url: String = "https://repository.library.brown.edu/api/search/?q=&selected_facets=mods_type_of_resource%3Amoving+image".to_string();
-    const SEARCH_URL: &str = "http://httpbin.org/json";
-    println!("SEARCH_URL, ``{}``", SEARCH_URL);
+    // extract search-url from settings hashmap
+    // let search_url: &str = &settings["SEARCH_URL"];
+    // let search_url: String = (&settings["SEARCH_URL"]).to_string();
 
-    let search_result: String = get_search_json(SEARCH_URL.to_string()).await;
+    // let initial_search_url: &str = &settings["SEARCH_URL"];
+    // let search_url: String = initial_search_url.to_string();
+
+    // query search-url -------------------------
+    // let search_url: String = settings.get("SEARCH_URL").unwrap().clone();
+    let search_url: String = settings
+        .get("SEARCH_URL")
+        .expect("problem accessing SEARCH_URL setting")
+        .clone();
+    let search_result: String = get_search_json(search_url).await;
+
+    // let search_result: String = get_search_json(       // <--- this works
+    //     settings.get("SEARCH_URL").unwrap().clone()
+    // ).await;
 
     //convert to json-object using serde_json
     let search_json: serde_json::Value =
@@ -43,6 +50,9 @@ async fn load_settings() -> HashMap<String, String> {
             panic!( "Problem accessing environmental-variable ``TRNSCRER_PRPPR__TRACKER_PATH``: ``{:?}``", error );
         });
     envar_settings.insert("TRACKER_PATH".to_string(), tracker_path);
+    // let search_url: String = "https://repository.library.brown.edu/api/search/?q=&selected_facets=mods_type_of_resource%3Amoving+image".to_string();
+    let search_url: String = "http://httpbin.org/json".to_string();
+    envar_settings.insert("SEARCH_URL".to_string(), search_url);
     envar_settings
 }
 

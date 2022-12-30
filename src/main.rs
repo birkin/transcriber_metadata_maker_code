@@ -22,8 +22,10 @@ async fn main() {
                 error
             );
         });
-    println!("search_json, ``{:?}``", search_json);
-    
+    println!(
+        "search_json formattd, ``{}``",
+        serde_json::to_string_pretty(&search_json).unwrap()
+    );
 } // end main()
 
 async fn load_settings() -> HashMap<String, String> {

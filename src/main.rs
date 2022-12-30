@@ -11,26 +11,8 @@ async fn main() {
     let settings: HashMap<String, String> = load_settings().await;
     println!("settings, ``{:?}``", settings);
 
-    let test = settings.get("TRACKER_PATH").unwrap().clone();
-
-    // extract search-url from settings hashmap
-    // let search_url: &str = &settings["SEARCH_URL"];
-    // let search_url: String = (&settings["SEARCH_URL"]).to_string();
-
-    // let initial_search_url: &str = &settings["SEARCH_URL"];
-    // let search_url: String = initial_search_url.to_string();
-
-    // query search-url -------------------------
-    // let search_url: String = settings.get("SEARCH_URL").unwrap().clone();
-    let search_url: String = settings
-        .get("SEARCH_URL")
-        .expect("problem accessing SEARCH_URL setting")
-        .clone();
-    let search_result: String = get_search_json(search_url).await;
-
-    // let search_result: String = get_search_json(       // <--- this works
-    //     settings.get("SEARCH_URL").unwrap().clone()
-    // ).await;
+    // get facet-query result -------------------
+    let search_result: String = get_search_json(settings["SEARCH_URL"].to_string()).await;
 
     //convert to json-object using serde_json
     let search_json: serde_json::Value =
@@ -40,14 +22,16 @@ async fn main() {
                 error
             );
         });
-}
+    println!("search_json, ``{:?}``", search_json);
+    
+} // end main()
 
 async fn load_settings() -> HashMap<String, String> {
     /* Loads settings from envars */
     let mut envar_settings: HashMap<String, String> = HashMap::new();
     let tracker_path: String =
-        std::env::var("TRNSCRER_PRPPR__TRACKER_PATH").unwrap_or_else(|error| {
-            panic!( "Problem accessing environmental-variable ``TRNSCRER_PRPPR__TRACKER_PATH``: ``{:?}``", error );
+        std::env::var("TRNSCRBR_PRPPR__TRACKER_DIR_PATH").unwrap_or_else(|error| {
+            panic!("Problem accessing environmental-variable: ``{:?}``", error);
         });
     envar_settings.insert("TRACKER_PATH".to_string(), tracker_path);
     // let search_url: String = "https://repository.library.brown.edu/api/search/?q=&selected_facets=mods_type_of_resource%3Amoving+image".to_string();

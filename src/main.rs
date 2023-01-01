@@ -1,12 +1,33 @@
-// use std::arch::aarch64::int32x2_t;
-use std::collections::HashMap;
-
 // use reqwest::*;
-use serde_json;
 // use tokio::*;
+use log::{debug, LevelFilter};  // for logging
+use serde_json;
+use std::collections::HashMap;
+use std::io::Write;  // for logging
+
 
 #[tokio::main]
 async fn main() {
+    // logging ----------------------------------
+    env_logger::Builder::new()
+        .format(|buf, record| {
+            writeln!(
+                buf,
+                "{}:{} {} [{}] - {}",
+                record.file().unwrap_or("unknown"),
+                // record.target(),
+                record.line().unwrap_or(0),
+                chrono::Local::now().format("%Y-%m-%dT%H:%M:%S"),
+                record.level(),
+                record.args()
+            )
+        })
+        .filter(Some("logger_example"), LevelFilter::Debug)
+        .init();
+
+    debug!("hello world");
+    log::debug!("another hello world");
+
     // load settings ----------------------------
     let settings: HashMap<String, String> = load_settings().await;
     println!("settings, ``{:?}``", settings);

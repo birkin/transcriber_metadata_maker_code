@@ -1,32 +1,15 @@
 // use reqwest::*;
 // use tokio::*;
-use log::{debug, LevelFilter};  // for logging
+use log::{debug, LevelFilter}; // for logging
 use serde_json;
 use std::collections::HashMap;
-use std::io::Write;  // for logging
-
+use std::io::Write; // for logging
 
 #[tokio::main]
 async fn main() {
-    // logging ----------------------------------
-    env_logger::Builder::new()
-        .format(|buf, record| {
-            writeln!(
-                buf,
-                "{}:{} {} [{}] - {}",
-                record.file().unwrap_or("unknown"),
-                // record.target(),
-                record.line().unwrap_or(0),
-                chrono::Local::now().format("%Y-%m-%dT%H:%M:%S"),
-                record.level(),
-                record.args()
-            )
-        })
-        .filter(Some("logger_example"), LevelFilter::Debug)
-        .init();
-
+    // setup logging ----------------------------
+    build_logger().await;
     debug!("hello world");
-    log::debug!("another hello world");
 
     // load settings ----------------------------
     let settings: HashMap<String, String> = load_settings().await;
@@ -49,6 +32,27 @@ async fn main() {
     );
 } // end main()
 
+
+async fn build_logger() {
+    env_logger::Builder::new()
+        .format(|buf, record| {
+            writeln!(  
+                buf,
+                "[{}] {} [{}::{}] {}",
+                // chrono::Local::now().format("%Y-%m-%dT%H:%M:%S"),
+                chrono::Local::now().format("%d/%b/%Y %H:%M:%S"),
+                record.level(),
+                record.file().unwrap_or("unknown"),
+                // record.target(),
+                record.line().unwrap_or(0),
+                record.args()
+            )
+        })
+        .filter(Some("the_logger"), LevelFilter::Debug)
+        .init();
+    debug!("logging started");
+}
+
 async fn load_settings() -> HashMap<String, String> {
     /* Loads settings from envars */
     let mut envar_settings: HashMap<String, String> = HashMap::new();
@@ -62,6 +66,7 @@ async fn load_settings() -> HashMap<String, String> {
     envar_settings.insert("SEARCH_URL".to_string(), search_url);
     envar_settings
 }
+
 
 async fn get_search_json(search_url: String) -> String {
     println!("starting get_search_json()");

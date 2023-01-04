@@ -56,14 +56,19 @@ async fn build_logger() {
 async fn load_settings() -> HashMap<String, String> {
     /* Loads settings from envars */
     let mut envar_settings: HashMap<String, String> = HashMap::new();
-    let tracker_path: String =
-        std::env::var("TRNSCRBR_PRPPR__TRACKER_DIR_PATH").unwrap_or_else(|error| {
-            panic!("Problem accessing environmental-variable: ``{:?}``", error);
-        });
+    // tracker-path -----------------------------
+    let envar_key: String = "TRNSCRBR_META_PRPPR__TRACKER_PATH".to_string();
+    let tracker_path: String = std::env::var(&envar_key).unwrap_or_else(|error| {
+        panic!("Problem accessing envar, ``{:?}``; error, ``{:?}``", envar_key, error);
+    });
     envar_settings.insert("TRACKER_PATH".to_string(), tracker_path);
-    // let search_url: String = "https://repository.library.brown.edu/api/search/?q=&selected_facets=mods_type_of_resource%3Amoving+image".to_string();
-    let search_url: String = "http://httpbin.org/json".to_string();
+    // search-url -------------------------------
+    let envar_key: String = "TRNSCRBR_META_PRPPR__INITIAL_SEARCH_URL".to_string();
+    let search_url: String = std::env::var(&envar_key).unwrap_or_else(|error| {
+        panic!("Problem accessing envar, ``{:?}``; error, ``{:?}``", envar_key, error);
+    });
     envar_settings.insert("SEARCH_URL".to_string(), search_url);
+    debug!("envar_settings, ``{:?}``", envar_settings);
     envar_settings
 }
 

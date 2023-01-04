@@ -32,11 +32,10 @@ async fn main() {
     );
 } // end main()
 
-
 async fn build_logger() {
     env_logger::Builder::new()
         .format(|buf, record| {
-            writeln!(  
+            writeln!(
                 buf,
                 "[{}] {} [{}::{}] {}",
                 // chrono::Local::now().format("%Y-%m-%dT%H:%M:%S"),
@@ -59,19 +58,27 @@ async fn load_settings() -> HashMap<String, String> {
     // tracker-path -----------------------------
     let envar_key: String = "TRNSCRBR_META_PRPPR__TRACKER_PATH".to_string();
     let tracker_path: String = std::env::var(&envar_key).unwrap_or_else(|error| {
-        panic!("Problem accessing envar, ``{:?}``; error, ``{:?}``", envar_key, error);
+        panic!(
+            "Problem accessing envar, ``{:?}``; error, ``{:?}``",
+            envar_key, error
+        );
     });
     envar_settings.insert("TRACKER_PATH".to_string(), tracker_path);
     // search-url -------------------------------
     let envar_key: String = "TRNSCRBR_META_PRPPR__INITIAL_SEARCH_URL".to_string();
     let search_url: String = std::env::var(&envar_key).unwrap_or_else(|error| {
-        panic!("Problem accessing envar, ``{:?}``; error, ``{:?}``", envar_key, error);
+        panic!(
+            "Problem accessing envar, ``{:?}``; error, ``{:?}``",
+            envar_key, error
+        );
     });
     envar_settings.insert("SEARCH_URL".to_string(), search_url);
-    debug!("envar_settings, ``{:?}``", envar_settings);
+    debug!(
+        "envar_settings formatted, ``{}``",
+        serde_json::to_string_pretty(&envar_settings).unwrap()
+    );
     envar_settings
 }
-
 
 async fn get_search_json(search_url: String) -> String {
     println!("starting get_search_json()");

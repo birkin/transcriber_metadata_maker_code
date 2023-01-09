@@ -15,8 +15,15 @@ async fn main() {
     let settings: HashMap<String, String> = load_settings().await;
     println!("settings, ``{:?}``", settings);
 
-    // get facet-query result -------------------
-    let search_result: String = get_search_json(settings["SEARCH_URL"].to_string()).await;
+    // get initial facet-query result -------------------
+    let start: i32 = 0;  // current query yields 250K+ results
+
+    // let url: String = settings["SEARCH_URL"].to_string();
+    // let search_result: String = get_search_json(url).await;
+
+    let url: String = format!( "{}&start={}", settings["SEARCH_URL"].to_string(), start.to_string() );
+    debug!( "url, ``{:?}``", url );
+    let search_result: String = get_search_json(url).await;
 
     //convert to json-object using serde_json
     let search_json: serde_json::Value =

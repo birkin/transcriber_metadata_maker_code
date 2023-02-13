@@ -8,6 +8,12 @@ This code prepares a list of items from the BDR that are ready for transcription
 
 Overview -- whole project.
 
+The transcriber project is a set of services that will allow individuals to transcribe audio and video files using Whisper. 
+
+The public (to the Brown community) facing part of the project will be a website for people and API calls from other services.
+
+If a person logs in, ze will see a form...
+
 ---
 
 Steps...

@@ -12,7 +12,13 @@ The transcriber project is a set of services that will allow individuals to tran
 
 The public (to the Brown community) facing part of the project will be a website for people and API calls from other services.
 
-If a person logs in, ze will see a form...
+If a person logs in, ze will be able access either a form to add an item to the transcription-queue, or transcription-queue entries. 
+
+- The data-entry form will simply consist of the fields `title` and `url`. The webapp will also store the user-eppn and the datestamp of the submission. 
+
+- The transcription-queue entries will show the above fields, as well as the `transcription`, `tool_metadata`, `transcription_date`, `transcriber`, `time_taken`, and `status` fields.
+
+If the webapp's API is called, it will return...
 
 ---
 
